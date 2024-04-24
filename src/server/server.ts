@@ -3,17 +3,21 @@ import { Database } from "../database";
 import cors from "cors";
 import { SystemEnvironment } from "../interfaces";
 import { SystemEnv } from "../utils";
+import { roomRouter } from "../routes";
 
 export class Server {
     private readonly app: Application;
     private readonly _sysEnv: SystemEnvironment;
+    private paths = {
+        room: '/api/room/'
+    }
 
     constructor() {
         this.app = express();
         this._sysEnv = SystemEnv.getInstance();
         this.middlewares();
         this.dbConnection();
-        // this.routes();
+        this.routes();
     }
 
     middlewares() {
@@ -28,6 +32,10 @@ export class Server {
         //se crea la instancia de la clase Database
         const db = new Database();
         await db.connect();
+    }
+
+    routes(){
+        this.app.use(this.paths.room, roomRouter )
     }
 
     listen() {

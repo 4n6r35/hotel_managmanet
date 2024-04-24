@@ -12,5 +12,14 @@ declare global {
             DB_PORT: number,
         }
     }
+
+    // Propiedad Personalizada del Partial<T> para permitir el alamcenamiento de valores nullos en las propiedades del objeto
+    type PartialNullable<T> = {
+        [P in keyof T]?: T[P] | null;
+    };
+
+    type PartialAnyable<T> = {
+        [P in keyof T]?: unknown;
+    };
 }
 
