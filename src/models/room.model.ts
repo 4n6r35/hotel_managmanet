@@ -1,9 +1,9 @@
 
-import { DataTypes, Model } from "sequelize";
+import { CreationAttributes, DataTypes, Model } from "sequelize";
 import { RoomEntity } from "../entities";
 import { Database } from "../database";
 
-interface RoomModel extends Model<PartialAnyable<RoomEntity>, 'id_room'>, RoomEntity { };
+interface RoomModel extends Model<PartialAnyable<RoomEntity>>, RoomEntity { };
 
 export const Room = Database.getInstance().getDataSource.define<RoomModel>(
     "Room",
@@ -18,6 +18,11 @@ export const Room = Database.getInstance().getDataSource.define<RoomModel>(
         type: DataTypes.STRING(45),
         value: DataTypes.DECIMAL(10),
         is_available: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: 1
+        },
+
+        state: {
             type: DataTypes.BOOLEAN,
             defaultValue: 1
         }

@@ -1,1 +1,1 @@
-export * from "./listRoom.controller"
+export * from "./room.controller"

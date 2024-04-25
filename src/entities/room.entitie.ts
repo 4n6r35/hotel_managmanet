@@ -4,6 +4,7 @@ export interface RoomEntity {
     type: string,
     value: number,
     is_available: boolean,
+    state:boolean
     createdAt: Date;
     updateAt: Date;
 }
