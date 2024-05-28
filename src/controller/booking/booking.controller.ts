@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { Database } from "../../database";
 import { Booking } from "../../models";
 import { BookingInputDataDTO } from "../../DTOs";
+import { CustomRequest } from "../../interfaces/customRequest";
 
 //OBTIENE TODOS LAS RESERVAS PAGINADAS
 export const ListBookingsController = async (req: Request, res: Response) => {
     const { page, size } = req.query as any
-
+    
     const { rows } = await Booking.findAndCountAll({
         where: {
             state: 1
@@ -30,12 +31,14 @@ export const ListBookingsController = async (req: Request, res: Response) => {
 
 }
 //OBTIENE LAS RESERVAS POR CODE = ID
-export const GetBookingByCodeController = async (req: Request, res: Response) => {
+export const GetUserBookingController = async (req: Request, res: Response) => {
     const { code } = req.query as any
+    const customReq = req as CustomRequest;
+    const user = customReq.userDataToken;
 
-    const booking = await Booking.findOne({
+    const booking = await Booking.findAndCountAll({
         where: {
-            id_booking: code,
+            id_user: user?.id_user,
             state: 1
         }
     });
@@ -55,7 +58,9 @@ export const GetBookingByCodeController = async (req: Request, res: Response) =>
 //CREATE RESERVA
 export const CreateBokingController = async (req: Request, res: Response) => {
 
-    const { ...data } = req.body as BookingInputDataDTO
+    const { id_user, ...data } = req.body as BookingInputDataDTO
+    const customReq = req as CustomRequest;
+    const user = customReq.userDataToken;
     const db = Database.getInstance();
     const transaction = await db.getDataSource.transaction();
 
@@ -66,7 +71,7 @@ export const CreateBokingController = async (req: Request, res: Response) => {
     }
 
     try {
-        const newBooking = await Booking.create(data, {
+        const newBooking = await Booking.create({id_user: user?.id_user ,...data}, {
             transaction
         });
 

@@ -3,14 +3,15 @@ import { Database } from "../database";
 import cors from "cors";
 import { SystemEnvironment } from "../interfaces";
 import { SystemEnv } from "../utils";
-import { bookingRouter, roomRouter } from "../routes";
+import { bookingRouter, roomRouter, userRouter } from "../routes";
 
 export class Server {
     private readonly app: Application;
     private readonly _sysEnv: SystemEnvironment;
     private paths = {
         room: '/api/room/',
-        booking: '/api/booking'
+        booking: '/api/booking',
+        user: '/api/user'
     }
 
     constructor() {
@@ -38,6 +39,7 @@ export class Server {
     routes() {
         this.app.use(this.paths.room, roomRouter)
         this.app.use(this.paths.booking, bookingRouter)
+        this.app.use(this.paths.user, userRouter)
     }
 
     listen() {

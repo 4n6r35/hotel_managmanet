@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Room } from "../../models";
 import { RoomInputDataDTO } from "../../DTOs";
 import { Database } from "../../database";
+import { CustomRequest } from "../../interfaces/customRequest";
 
 //OBTIENE TODOS LAS HABITACIONES PAGINADAS
 export const ListRoomController = async (req: Request, res: Response) => {
@@ -31,11 +32,11 @@ export const ListRoomController = async (req: Request, res: Response) => {
 }
 //OBTIENE LAS HABITACIONES POR CODE = ID
 export const GetRoomByCodeController = async (req: Request, res: Response) => {
-    const { code } = req.query as any
+    const { id_room } = req.query as any
 
     const room = await Room.findOne({
         where: {
-            id_room: code,
+            id_room: id_room,
             state: 1
         }
     });
@@ -48,7 +49,7 @@ export const GetRoomByCodeController = async (req: Request, res: Response) => {
     }
 
     return res.status(404).json({
-        message: `No se han encontrado habitacion con el code ${code}.`,
+        message: `No se han encontrado habitacion con el id ${id_room}.`,
     })
 }
 
@@ -56,6 +57,17 @@ export const GetRoomByCodeController = async (req: Request, res: Response) => {
 export const CreateRoomController = async (req: Request, res: Response) => {
 
     const { ...data } = req.body as RoomInputDataDTO
+    const customReq = req as CustomRequest;
+    const user = customReq.userDataToken;
+    const { role } = user as any
+
+    if (role !== 'admin') {
+
+        return res.status(404).json({
+            status: false,
+            message: "El rol no tiene permiso para relizar esta acción"
+        })
+    }
     const db = Database.getInstance();
     const transaction = await db.getDataSource.transaction();
     try {
@@ -81,10 +93,20 @@ export const CreateRoomController = async (req: Request, res: Response) => {
 export const UpdateRoomController = async (req: Request, res: Response) => {
 
     const { id_room, ...data } = req.body
+    const customReq = req as CustomRequest;
+    const user = customReq.userDataToken;
+    const { role } = user as any
+    if (role !== 'admin') {
+
+        return res.status(404).json({
+            status: false,
+            message: "El rol no tiene permiso para relizar esta acción"
+        })
+    }
     const db = Database.getInstance();
     const transaction = await db.getDataSource.transaction();
     try {
-        const updateRoom = await Room.update(data, {
+        await Room.update(data, {
             where: {
                 id_room: id_room
             },
@@ -113,6 +135,17 @@ export const UpdateRoomController = async (req: Request, res: Response) => {
 export const DeleteRoomController = async (req: Request, res: Response) => {
 
     const { id_room } = req.query
+    const customReq = req as CustomRequest;
+    const user = customReq.userDataToken;
+    const { role } = user as any
+    if (role !== 'admin') {
+
+        return res.status(404).json({
+            status: false,
+            message: "El rol no tiene permiso para relizar esta acción"
+        })
+    }
+
     const db = Database.getInstance();
     const transaction = await db.getDataSource.transaction();
     await Room.update({ state: false }, {

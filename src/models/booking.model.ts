@@ -7,7 +7,7 @@ import { Database } from "../database";
 interface BookingModel extends Model<PartialAnyable<BookingEntity>>, BookingEntity { };
 
 export const Booking = Database.getInstance().getDataSource.define<BookingModel>(
-    "Room",
+    "Booking",
     {
         id_booking: {
             type: DataTypes.BIGINT,
@@ -16,11 +16,9 @@ export const Booking = Database.getInstance().getDataSource.define<BookingModel>
         },
 
         id_room: DataTypes.BIGINT,
-        client_name: DataTypes.STRING(255),
-        client_number: DataTypes.BIGINT,
-        date_entry: DataTypes.DATE,
-        date_exit: DataTypes.DATE,
-        reservation_date: DataTypes.DATE,
+        id_user: DataTypes.BIGINT,
+        entry_date: DataTypes.DATE,
+        exit_date: DataTypes.DATE,
 
         state: {
             type: DataTypes.BOOLEAN,
@@ -28,7 +26,7 @@ export const Booking = Database.getInstance().getDataSource.define<BookingModel>
         }
     },
     {
-        tableName: 'booking',
+        tableName: 'bookings',
         createdAt: true,
         updatedAt: true
     }

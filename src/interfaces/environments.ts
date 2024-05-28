@@ -10,3 +10,7 @@ export interface DataBaseEnvironment {
     DB_HOST: string,
     DB_PORT: number,
 }
+
+export interface SecurityEnvironment {
+    SECRET_KEY_TOKEN: string
+}

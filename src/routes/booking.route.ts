@@ -1,15 +1,16 @@
 import { Router } from "express";
-import { CreateBokingController, DeleteBookingController, GetBookingByCodeController, ListBookingsController, UpdateBookingController } from "../controller";
+import { CreateBokingController, DeleteBookingController, GetUserBookingController, ListBookingsController, UpdateBookingController } from "../controller";
+import { TokenMiddleware } from "../middleware";
 
 
 export const bookingRouter = Router();
 
-bookingRouter.get('/list', ListBookingsController)
+bookingRouter.get('/list', TokenMiddleware, ListBookingsController)
 
-bookingRouter.get('/get-by-code', GetBookingByCodeController)
+bookingRouter.get('/get', TokenMiddleware, GetUserBookingController)
 
-bookingRouter.post('/create', CreateBokingController)
+bookingRouter.post('/create', TokenMiddleware, CreateBokingController)
 
-bookingRouter.patch('/update', UpdateBookingController)
+bookingRouter.post('/update', TokenMiddleware, UpdateBookingController)
 
-bookingRouter.delete('/delete', DeleteBookingController)
+bookingRouter.delete('/delete', TokenMiddleware, DeleteBookingController)
