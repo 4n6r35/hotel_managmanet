@@ -28,7 +28,7 @@ export const User = Database.getInstance().getDataSource.define<UserModel>(
         
     },
     {
-        tableName: 'user',
+        tableName: 'users',
         createdAt: true,
         updatedAt: true
     }

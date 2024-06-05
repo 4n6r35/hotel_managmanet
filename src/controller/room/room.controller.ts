@@ -8,12 +8,27 @@ import { CustomRequest } from "../../interfaces/customRequest";
 export const ListRoomController = async (req: Request, res: Response) => {
     const { page, size } = req.query as any
 
+    let _size;
+    let _page;
+    
+    if (size === undefined || size === "" || size === 0 || size === null) {
+        _size = 10;
+    } else {
+        _size = size;
+    }
+
+    if (page === undefined || page === "" || page === 0 || page === null) {
+        _page = 1;
+    } else {
+        _page = page;
+    }
+
     const { rows } = await Room.findAndCountAll({
         where: {
             state: true
         },
-        limit: Number(size),
-        offset: Number(page) - 1
+        limit: Number(_size),
+        offset: Number(_page) - 1
     });
 
     const rooms = rows.map(x => x.dataValues)

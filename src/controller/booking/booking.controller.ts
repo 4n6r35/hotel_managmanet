@@ -7,13 +7,28 @@ import { CustomRequest } from "../../interfaces/customRequest";
 //OBTIENE TODOS LAS RESERVAS PAGINADAS
 export const ListBookingsController = async (req: Request, res: Response) => {
     const { page, size } = req.query as any
+
+    let _size;
+    let _page;
     
+    if (size === undefined || size === "" || size === 0 || size === null) {
+        _size = 10;
+    } else {
+        _size = size;
+    }
+
+    if (page === undefined || page === "" || page === 0 || page === null) {
+        _page = 1;
+    } else {
+        _page = page;
+    }
+
     const { rows } = await Booking.findAndCountAll({
         where: {
             state: 1
         },
-        limit: Number(size),
-        offset: Number(page) - 1
+        limit: Number(_size),
+        offset: Number(_page) - 1
     });
 
     const bookings = rows.map(x => x.dataValues)
@@ -71,7 +86,7 @@ export const CreateBokingController = async (req: Request, res: Response) => {
     }
 
     try {
-        const newBooking = await Booking.create({id_user: user?.id_user ,...data}, {
+        const newBooking = await Booking.create({ id_user: user?.id_user, ...data }, {
             transaction
         });
 
